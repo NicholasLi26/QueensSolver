@@ -107,22 +107,6 @@ public class Queens implements ActionListener{
 
 	public void calculate(){
 
-		// String s = "";
-		// for (int i = 0; i < size; i++) {
-		// 	for (int j = 0; j < size; j++) {
-		// 		s+= mainArr[i][j]+"	";
-		// 	}
-		// 	s+="\n";
-		// }
-		// JOptionPane.showMessageDialog(null, s );
-		// int[] j = { (colorArr[0].coords.get(0).charAt(0))- '0', (colorArr[0].coords.get(0).charAt(1))-'0'};
-		// System.out.println(j[0] +", "+ j[1]);
-		// for(int i = 0; i<size; i++){
-		// 	System.out.println(colorArr[i].checkHeight());
-		// }
-		// for (int i = 0; i < colorArr[0].size; i++) {
-		// 	System.out.println(colorArr[0].coordsArr[i][0] +" ,"+colorArr[0].coordsArr[i][1]);
-		// }
 		while(!checkDone()&&madeChange){
 			madeChange = false;
 			colorCheck();
