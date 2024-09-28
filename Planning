@@ -1,0 +1,45 @@
+2x2 array for each of the rows
+array from each of the colours listing indicies - used for getting heights
+heights 
+array for col finished - do not search in said 
+array for row finished
+var for each of the currently selected queens in each Selection
+array of indicies that are not possible
+
+scan horizontal then vertical
+if found break scan, move to funct modify and carry out modification - save scan spot.
+
+find colours with Least
+order
+find overlaps
+checks
+x out on colours that have extras
+do vertical and horizontal
+funct index in arr. bool
+funct. check done bool
+funct. check rows 
+    if row = one color
+    if row = one square and x
+funct check col
+    if col = one color
+    if col = one square and x
+funct check heights
+    if exists same num of colours at either starting low y or high y where num height <= num colours where the difference between any 2 is <\1
+    x all other colours in all rows
+
+mod
+funct clear col
+funct clear rows
+funct clear surround // combine
+
+checks: if height of num colours occupoy num rows
+
+known on start
+Numi of colourssize of grid
+num of tiles for each colour
+    case for one
+
+state of the check, rows, cols, or groups
+after check for ones in colour grouping though colour object arracy
+
+

@@ -126,11 +126,8 @@ public class Queens implements ActionListener{
 		while(!checkDone()&&madeChange){
 			madeChange = false;
 			colorCheck();
-			print();
 			rowCheck();
-			print();
 			columnCheck();
-			print();
 			pairsCheck();
 		}
 		//addQueen(new int[] {2,3});
@@ -163,7 +160,6 @@ public class Queens implements ActionListener{
 			mainArr[coords[0]][coords[1]]="X";
 			madeChange = true;
 		}
-
 	}
 
 	public void addQueen(int[] coords){
