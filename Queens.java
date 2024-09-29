@@ -106,7 +106,7 @@ public class Queens implements ActionListener{
 	}
 
 	public void calculate(){
-
+		long start = System.currentTimeMillis();
 		while(!checkDone()&&madeChange){
 			madeChange = false;
 			colorCheck();
@@ -116,6 +116,8 @@ public class Queens implements ActionListener{
 		}
 		//addQueen(new int[] {2,3});
 		print();
+		long end = System.currentTimeMillis();
+		System.out.println("Time taken in ms: "+(end-start));
 		//twosNthrees(colorArr[0]);
 
 	}
@@ -240,6 +242,7 @@ public class Queens implements ActionListener{
 
 		}
 	}
+	//♕ 
 
 	public void clearColourR(int row, String color){
 		for (int i = 0; i < size; i++) {
