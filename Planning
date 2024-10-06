@@ -43,3 +43,17 @@ state of the check, rows, cols, or groups
 after check for ones in colour grouping though colour object arracy
 
 
+IF WITHIN RANGE OF ROWS OR columns there exists equal number of colours whose range of width or height firts within the scanned rows or columns
+itterate through list, starting at one column working way in 
+add all colours found in coloumn to array of widths.
+if the num of colours that are constrained within the scope of the scanned rows or columns is equal to the width or height,
+remove all colours not within scope
+have for loop
+is colour within scope check width, if >the current width, expand, add additional colours. recheck widths, see how many are in scope
+if num in scope = width, remove all colours not in scope.  
+add colors to scope array
+remove all colours not within the rows
+
+scan left ro right including all ranges. 
+similar to above, but if num of colours equals the width, remove rest of colour. can possibly implement with above if 
+num of colours and contraints = width.

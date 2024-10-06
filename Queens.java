@@ -111,8 +111,10 @@ public class Queens implements ActionListener{
 			madeChange = false;
 			colorCheck();
 			rowCheck();
+			print();
 			columnCheck();
 			pairsCheck();
+			
 		}
 		//addQueen(new int[] {2,3});
 		print();
@@ -217,7 +219,7 @@ public class Queens implements ActionListener{
 	public void rowCheck(){
 		for (int i = 0; i < size; i++) {
 			String[] tempRow = mainArr[i];
-			String last = tempRow[0];
+			String last;
 			int k = 0;
 			Boolean done = false;
 			while(tempRow[k].equals("X")&& k<size-1){
@@ -227,19 +229,21 @@ public class Queens implements ActionListener{
 					break;
 				}
 			}
+			int numOfColours = 0;
 			last = tempRow[k];
+			numOfColours++;
 
 			if(!done){
 				for (int j = 0; j < size; j++) {
 					if(!tempRow[j].equals(last) && !tempRow[j].equals("X")){
-						last=tempRow[j];
+						numOfColours++;
 					}
 				}
-				if(last.equals(tempRow[k])){
+				if(numOfColours == 1){
 					clearColourR(i, last);
+					System.out.println("Row: "+i);
 				}
 			}
-
 		}
 	}
 	//♕ 
@@ -263,7 +267,7 @@ public class Queens implements ActionListener{
 			for (int j = 0; j < size; j++) {
 				tempCol[j] = mainArr[j][i];	
 			}
-			String last = tempCol[0];
+			String last;
 			Boolean done = false;
 			int k = 0;
 			while(tempCol[k].equals("X")&& k<size-1){
@@ -273,13 +277,17 @@ public class Queens implements ActionListener{
 					break;
 				}
 			}
+			int numOfColours = 0;
+			last = tempCol[k];
+			numOfColours++;
+
 			if (!done){
 				for (int j = 0; j < size; j++) {
 					if(!tempCol[j].equals(last) && !tempCol[j].equals("X")){
-						last=tempCol[j];
+						numOfColours++;
 					}
 				}
-				if(last.equals(tempCol[k])){
+				if(numOfColours == 1){
 					clearColourC(i, last);
 				}
 
@@ -293,6 +301,44 @@ public class Queens implements ActionListener{
 			for (int j = 0; j < size; j++) {
 				if(j!=column){
 					if(mainArr[i][j].equals(color)){
+						removeSquare(new int[] {i,j});
+					}
+				}
+			}
+		}
+	}
+
+	public void clearColourRangeC(int[] column, String[] color){
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				Boolean isInC = false;
+				for(int k = 0; k < column.length; k++){
+					if(j==column[k]){
+						isInC = true;
+						break;
+					}
+				}
+				if(!isInC){
+					if(!isIn(mainArr[i][j],color)){
+						removeSquare(new int[] {i,j});
+					}
+				}
+			}
+		}
+	}
+
+	public void clearColourRangeR(int[] row, String[] color){
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				Boolean isInR = false;
+				for(int k = 0; k < row.length; k++){
+					if(i==row[k]){
+						isInR = true;
+						break;
+					}
+				}
+				if(!isInR){
+					if(!isIn(mainArr[i][j],color)){
 						removeSquare(new int[] {i,j});
 					}
 				}
@@ -375,7 +421,6 @@ public class Queens implements ActionListener{
 		}
 	}//checking for groups along the Y axis
 
-
 	public Boolean isIn(String col, String[] arr){
         for(int i = 0; i < arr.length; i++) {
 			if(arr[i] == null) break;
@@ -456,6 +501,122 @@ public class Queens implements ActionListener{
 				}
 			}//horizontal
 		}
+	}
+
+	public void checkGroups(){
+		checkGroupsH();
+		//checkGroupsW();
+	}
+
+	public void checkGroupsW() {// works top row down
+		for (int i = 0; i < size - 1; i++) {
+			String[] rowInRange = new String[size];
+			int currSize = 0;
+			rowInRange[0] = mainArr[i][0];
+
+
+			String[] rangeInRange = new String[size];
+			int currSizeB = 0;
+
+			for (int j = i; j < size; j++) {
+				for (int k = 0; k < size; k++) {
+					if (!isIn(mainArr[j][k], rowInRange) && !mainArr[j][k].equals("X") && !mainArr[j][k].equals("Queen")) {
+						rowInRange[currSize] = mainArr[j][k];
+						currSize++;
+					}
+				}
+				if(currSize!=0){
+					if (currSize == j - i) {
+						for (int l = 0; l < currSize; l++) {
+							clearColourRangeR(arrRange(i, j), rowInRange);
+						}
+
+					}
+					for (int k = 0; k < currSize; k++) {
+						if (!isIn(rowInRange[k], rangeInRange) && isInSearchRangeW(rowInRange[k], i, j)) {
+							rangeInRange[currSizeB] = rowInRange[k];
+							currSizeB++;
+						}
+					}
+					if (currSizeB == j - i) {
+						for (int l = 0; l < size; l++) {
+							for (int k = i; k < j - i; k++) {
+								if (!isIn(mainArr[k][l], rangeInRange)) {
+									removeSquare(new int[] { k, l });
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+	public void checkGroupsH() {
+		for (int i = 0; i < size - 1; i++) {
+			String[] colInRange = new String[size];
+			int currSize = 0;
+			String[] rangeInRange = new String[size];
+			int currSizeB = 0;
+
+			for (int j = i; j < size; j++) {
+				for (int k = 0; k < size; k++) {
+					if (!isIn(mainArr[k][j], colInRange) && !mainArr[k][j].equals("X") && !mainArr[k][j].equals("Queen")) {
+						colInRange[currSize] = mainArr[k][j];
+						currSize++;
+					}
+				}
+				System.out.println("currSize: "+currSize);
+				if (currSize == j - i) {
+					for (int l = 0; l < currSize; l++) {
+						clearColourRangeC(arrRange(i, j), colInRange);
+					}
+
+				}
+				for (int k = 0; k < currSize; k++) {
+					if (!isIn(colInRange[k], rangeInRange) && isInSearchRangeH(colInRange[k], i, j)) {
+						rangeInRange[currSizeB] = colInRange[k];
+						currSizeB++;
+					}
+				}
+				if (currSizeB == j - i) {
+					for (int l = 0; l < size; l++) {
+						for (int k = i; k < j - i; k++) {
+							if (!isIn(mainArr[l][k], rangeInRange)) {
+								removeSquare(new int[] { l, k });
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+	public int[] arrRange(int i, int j){
+		int[] range = new int[j-i];
+		
+		for(int counter = 0; counter < i-j ; counter++){
+			range[counter] = i+counter;
+		}
+		return range;
+	}
+
+	public Boolean isInSearchRangeH(String colour, int left, int right){
+		int index = colorIndex(colour);
+		if(colorArr[index].rangeOfW()[0] <= right && colorArr[index].rangeOfW()[1] >= left){
+			return true;
+		}
+		return false;
+	}
+
+	public Boolean isInSearchRangeW(String colour, int top, int bottom){
+		int index = colorIndex(colour);
+		if(colorArr[index].rangeOfH()[0] == top && colorArr[index].rangeOfH()[1] == bottom)
+			return true;
+		
+		return false;
 	}
 
 	public boolean checkDone(){
