@@ -111,7 +111,6 @@ public class Queens implements ActionListener{
 			madeChange = false;
 			colorCheck();
 			rowCheck();
-			print();
 			columnCheck();
 			pairsCheck();
 			
@@ -241,7 +240,6 @@ public class Queens implements ActionListener{
 				}
 				if(numOfColours == 1){
 					clearColourR(i, last);
-					System.out.println("Row: "+i);
 				}
 			}
 		}
