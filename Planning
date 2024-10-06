@@ -57,3 +57,6 @@ remove all colours not within the rows
 scan left ro right including all ranges. 
 similar to above, but if num of colours equals the width, remove rest of colour. can possibly implement with above if 
 num of colours and contraints = width.
+
+link all coords to get the structure
+check surrounding colours to see if they link with all other colours, and for all colours not foudn within connecting row, are in same row or in col
