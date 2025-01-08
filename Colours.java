@@ -54,6 +54,7 @@ public class Colours{
     }
 
     public void addElem(int[] add){
+        // adds as x, y
         coords.add((String.valueOf(add[0])+String.valueOf(add[1])));
         Collections.sort(coords);
         size++;

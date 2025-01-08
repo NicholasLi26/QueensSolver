@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
-
+//♕ 
 public class Queens implements ActionListener{
     protected JPanel main, calculatePanel;
 	protected JLabel title, test;
@@ -113,14 +113,15 @@ public class Queens implements ActionListener{
 			rowCheck();
 			columnCheck();
 			pairsCheck();
-			
+			if(!madeChange){
+				checkGroups();
+			}
 		}
-		//addQueen(new int[] {2,3});
+
+
 		print();
 		long end = System.currentTimeMillis();
 		System.out.println("Time taken in ms: "+(end-start));
-		//twosNthrees(colorArr[0]);
-
 	}
 
 	public void coloursConstructor(){
@@ -244,7 +245,6 @@ public class Queens implements ActionListener{
 			}
 		}
 	}
-	//♕ 
 
 	public void clearColourR(int row, String color){
 		for (int i = 0; i < size; i++) {
@@ -306,7 +306,7 @@ public class Queens implements ActionListener{
 		}
 	}
 
-	public void clearColourRangeC(int[] column, String[] color){
+	public void clearColourOutsideRangeC(int[] column, String[] color){
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				Boolean isInC = false;
@@ -317,7 +317,7 @@ public class Queens implements ActionListener{
 					}
 				}
 				if(!isInC){
-					if(!isIn(mainArr[i][j],color)){
+					if(isIn(mainArr[i][j],color)){
 						removeSquare(new int[] {i,j});
 					}
 				}
@@ -325,7 +325,7 @@ public class Queens implements ActionListener{
 		}
 	}
 
-	public void clearColourRangeR(int[] row, String[] color){
+	public void clearColourOutsideRangeR(int[] row, String[] color){
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				Boolean isInR = false;
@@ -336,9 +336,29 @@ public class Queens implements ActionListener{
 					}
 				}
 				if(!isInR){
-					if(!isIn(mainArr[i][j],color)){
+					if(isIn(mainArr[i][j], color)){
 						removeSquare(new int[] {i,j});
 					}
+				}
+			}
+		}
+	}
+
+	public void clearColourInsideRangeR(int top, int bottom, String[] rangeInRange){
+		for (int l = 0; l < size; l++) {
+			for (int k = top; k <= bottom; k++) {
+				if (!isIn(mainArr[k][l], rangeInRange)) {
+					removeSquare(new int[] { k, l });
+				}
+			}
+		}
+	}
+
+	public void clearColourInsideRangeC(int left, int right, String[] rangeInRange){
+		for (int l = 0; l < size; l++) {
+			for (int k = left; k <= right; k++) {
+				if (!isIn(mainArr[l][k], rangeInRange)) {
+					removeSquare(new int[] { l, k });
 				}
 			}
 		}
@@ -442,17 +462,17 @@ public class Queens implements ActionListener{
 					removeSquare(new int[] {temp[1][0],temp[1][1]-1});
 				}//removing left 2
 			}//Vertical
-			else{
+			else if (c.checkWidth()==2){
 				if(temp[0][0]+1 < size){
 					removeSquare(new int[] {temp[0][0]+1,temp[0][1]});
 					removeSquare(new int[] {temp[1][0]+1, temp[1][1]});
 
-				}//removing right 2
+				}//removing top 2
 				if(temp[0][0]-1>=0){
 					removeSquare(new int[] {temp[0][0]-1,temp[0][1]});
 					removeSquare(new int[] {temp[1][0]-1,temp[1][1]});
 					
-				}//removing left 2
+				}//removing bottom 2
 			}//Horizontal
 		}
 		else{
@@ -503,47 +523,42 @@ public class Queens implements ActionListener{
 
 	public void checkGroups(){
 		checkGroupsH();
-		//checkGroupsW();
+		checkGroupsW();
 	}
 
 	public void checkGroupsW() {// works top row down
+		mainloop:
 		for (int i = 0; i < size - 1; i++) {
 			String[] rowInRange = new String[size];
 			int currSize = 0;
-			rowInRange[0] = mainArr[i][0];
-
-
 			String[] rangeInRange = new String[size];
 			int currSizeB = 0;
 
 			for (int j = i; j < size; j++) {
 				for (int k = 0; k < size; k++) {
-					if (!isIn(mainArr[j][k], rowInRange) && !mainArr[j][k].equals("X") && !mainArr[j][k].equals("Queen")) {
+					if (!mainArr[j][k].equals("X") && !mainArr[j][k].equals("Queen") && !isIn(mainArr[j][k], rowInRange)) {
 						rowInRange[currSize] = mainArr[j][k];
 						currSize++;
 					}
 				}
-				if(currSize!=0){
+				if(currSize!=0 || currSize!=1){
 					if (currSize == j - i) {
+						System.out.println("there");
+						print();
 						for (int l = 0; l < currSize; l++) {
-							clearColourRangeR(arrRange(i, j), rowInRange);
+							clearColourOutsideRangeR(arrRange(i, j), rowInRange);
 						}
-
+						print();
+						break mainloop;
 					}
 					for (int k = 0; k < currSize; k++) {
-						if (!isIn(rowInRange[k], rangeInRange) && isInSearchRangeW(rowInRange[k], i, j)) {
+						if (!isIn(rowInRange[k], rangeInRange) && isInSearchRangeH(rowInRange[k], i, j)) {
 							rangeInRange[currSizeB] = rowInRange[k];
 							currSizeB++;
 						}
 					}
 					if (currSizeB == j - i) {
-						for (int l = 0; l < size; l++) {
-							for (int k = i; k < j - i; k++) {
-								if (!isIn(mainArr[k][l], rangeInRange)) {
-									removeSquare(new int[] { k, l });
-								}
-							}
-						}
+						clearColourInsideRangeR(i, j, rangeInRange);
 					}
 				}
 				
@@ -552,42 +567,41 @@ public class Queens implements ActionListener{
 	}
 
 	public void checkGroupsH() {
+		mainloop:
 		for (int i = 0; i < size - 1; i++) {
 			String[] colInRange = new String[size];
 			int currSize = 0;
 			String[] rangeInRange = new String[size];
 			int currSizeB = 0;
 
+			
 			for (int j = i; j < size; j++) {
 				for (int k = 0; k < size; k++) {
-					if (!isIn(mainArr[k][j], colInRange) && !mainArr[k][j].equals("X") && !mainArr[k][j].equals("Queen")) {
+					if (!mainArr[k][j].equals("X") && !mainArr[k][j].equals("Queen") && !isIn(mainArr[k][j], colInRange)) {
 						colInRange[currSize] = mainArr[k][j];
 						currSize++;
 					}
 				}
-				System.out.println("currSize: "+currSize);
-				if (currSize == j - i) {
-					for (int l = 0; l < currSize; l++) {
-						clearColourRangeC(arrRange(i, j), colInRange);
+				if(currSize!=0 || currSize!=1){
+					if (currSize == j - i) {
+						//print();
+						for (int l = 0; l < currSize; l++) {
+							clearColourOutsideRangeC(arrRange(i, j), colInRange);
+						}
+						//print();
+						break mainloop;
 					}
-
-				}
-				for (int k = 0; k < currSize; k++) {
-					if (!isIn(colInRange[k], rangeInRange) && isInSearchRangeH(colInRange[k], i, j)) {
-						rangeInRange[currSizeB] = colInRange[k];
-						currSizeB++;
-					}
-				}
-				if (currSizeB == j - i) {
-					for (int l = 0; l < size; l++) {
-						for (int k = i; k < j - i; k++) {
-							if (!isIn(mainArr[l][k], rangeInRange)) {
-								removeSquare(new int[] { l, k });
-							}
+					//if not broken out of, check if the range of the colours within colInRange is within the search range.
+					for (int k = 0; k < currSize; k++) {
+						if (!isIn(colInRange[k], rangeInRange) && isInSearchRangeW(colInRange[k], i, j)) {
+							rangeInRange[currSizeB] = colInRange[k];
+							currSizeB++;
 						}
 					}
+					if (currSizeB == j - i) {
+						clearColourInsideRangeC(i, j, rangeInRange);
+					}
 				}
-
 			}
 		}
 	}
@@ -601,20 +615,15 @@ public class Queens implements ActionListener{
 		return range;
 	}
 
-	public Boolean isInSearchRangeH(String colour, int left, int right){
+	public Boolean isInSearchRangeW(String colour, int left, int right){
 		int index = colorIndex(colour);
-		if(colorArr[index].rangeOfW()[0] <= right && colorArr[index].rangeOfW()[1] >= left){
-			return true;
-		}
-		return false;
+		return (colorArr[index].rangeOfW()[0] <= right && colorArr[index].rangeOfW()[1] >= left);
+
 	}
 
-	public Boolean isInSearchRangeW(String colour, int top, int bottom){
+	public Boolean isInSearchRangeH(String colour, int top, int bottom){
 		int index = colorIndex(colour);
-		if(colorArr[index].rangeOfH()[0] == top && colorArr[index].rangeOfH()[1] == bottom)
-			return true;
-		
-		return false;
+		return colorArr[index].rangeOfH()[0] == top && colorArr[index].rangeOfH()[1] == bottom;
 	}
 
 	public boolean checkDone(){
